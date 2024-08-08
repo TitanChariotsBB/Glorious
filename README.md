@@ -8,7 +8,7 @@ Glorious is a [chorus](https://en.wikipedia.org/wiki/Chorus_(audio_effect)#Elect
 
 ### Background
 
-I originally created the algorithm for this chorus in high school in the (Audulus)[https://audulus.com/] modular synthesis/visual programming environment. Later I implemented it in (csound)[https://csound.com/]. I decided implementing the algorithm "for real" in JUCE would be a great way learn C++ and the JUCE framework. 
+I originally created the algorithm for this chorus in high school in the [Audulus](https://audulus.com/) modular synthesis/visual programming environment. Later I implemented it in [csound](https://csound.com/). I decided implementing the algorithm "for real" in JUCE would be a great way learn C++ and the JUCE framework. 
 
 ### How does it work?
 
