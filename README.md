@@ -1,6 +1,6 @@
 # Glorious
 
-A stereo chorus plugin made with JUCE
+A stereo chorus plugin made with [JUCE](https://juce.com/)
 
 ### What is this?
 
