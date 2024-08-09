@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <JUCERPROJECT id="wT8gM8" name="Glorious" projectType="audioplug" useAppConfig="0"
-              addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1" pluginVST3Category="Modulation">
+              addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1" pluginVST3Category="Modulation"
+              defines="FOLEYS_SHOW_GUI_EDITOR_PALLETTE=0">
   <MAINGROUP id="usEKOZ" name="Glorious">
     <GROUP id="{1C1BA35F-5FCF-84F1-EDC7-0A37FC806D2B}" name="Source">
+      <FILE id="fGgG7m" name="ChorusAlgos.h" compile="0" resource="0" file="Source/ChorusAlgos.h"/>
       <FILE id="uA5XnV" name="PluginProcessor.cpp" compile="1" resource="0"
             file="Source/PluginProcessor.cpp"/>
       <FILE id="C3Yo6X" name="PluginProcessor.h" compile="0" resource="0"
@@ -12,8 +14,10 @@
             file="Source/PluginEditor.cpp"/>
       <FILE id="bthKcm" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
     </GROUP>
+    <FILE id="Ep5cDz" name="magic.xml" compile="0" resource="1" file="Resources/magic.xml"/>
   </MAINGROUP>
   <MODULES>
+    <MODULE id="foleys_gui_magic" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
     <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_audio_devices" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_audio_formats" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
@@ -22,6 +26,7 @@
     <MODULE id="juce_audio_processors" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_audio_utils" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_core" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_cryptography" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_data_structures" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_dsp" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_events" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
@@ -29,11 +34,14 @@
     <MODULE id="juce_gui_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_gui_extra" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
   </MODULES>
-  <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1" JUCE_VST3_CAN_REPLACE_VST2="0"/>
+  <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1" JUCE_VST3_CAN_REPLACE_VST2="0"
+               FOLEYS_ENABLE_BINARY_DATA="1"/>
   <EXPORTFORMATS>
     <VS2022 targetFolder="Builds/VisualStudio2022">
       <CONFIGURATIONS>
-        <CONFIGURATION isDebug="1" name="Debug" targetName="Glorious"/>
+        <CONFIGURATION isDebug="1" name="Debug" targetName="Glorious" enablePluginBinaryCopyStep="1"
+                       vst3BinaryLocation="C:\Users\ABBOTTCM21\OneDrive - Grove City College\Desktop\VST Test Builds"
+                       defines="FOLEYS_SHOW_GUI_EDITOR_PALLETTE=1"/>
         <CONFIGURATION isDebug="0" name="Release" targetName="Glorious"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
@@ -50,6 +58,8 @@
         <MODULEPATH id="juce_graphics" path="../../../../../../JUCE/modules"/>
         <MODULEPATH id="juce_gui_basics" path="../../../../../../JUCE/modules"/>
         <MODULEPATH id="juce_gui_extra" path="../../../../../../JUCE/modules"/>
+        <MODULEPATH id="foleys_gui_magic" path="../../../../../../JUCE/foleys_gui_magic-main/modules"/>
+        <MODULEPATH id="juce_cryptography" path="../../../../../../JUCE/modules"/>
       </MODULEPATHS>
     </VS2022>
   </EXPORTFORMATS>

@@ -12,7 +12,7 @@
 //==============================================================================
 GloriousAudioProcessor::GloriousAudioProcessor()
 #ifndef JucePlugin_PreferredChannelConfigurations
-     : AudioProcessor (BusesProperties()
+     : MagicProcessor (BusesProperties()
                      #if ! JucePlugin_IsMidiEffect
                       #if ! JucePlugin_IsSynth
                        .withInput  ("Input",  juce::AudioChannelSet::stereo(), true)
@@ -22,22 +22,26 @@ GloriousAudioProcessor::GloriousAudioProcessor()
                        )
 #endif
 {
+    // Link to gui
+    FOLEYS_SET_SOURCE_PATH(__FILE__)
+    magicState.setGuiValueTree(BinaryData::magic_xml, BinaryData::magic_xmlSize);
+
     // Parameter initialization
 
     // Mix
     addParameter(mix = new juce::AudioParameterFloat("mix", "Mix", 0.0f, 1.0f, 0.5f));
 
     // Rate
-    juce::NormalisableRange<float> rateRange(0.05f, 3.0f);
+    juce::NormalisableRange<float> rateRange(0.03f, 2.0f);
     rateRange.skew = 0.5f;
-    addParameter(rate = new juce::AudioParameterFloat("rate", "Rate", rateRange, 0.5f));
+    addParameter(rate = new juce::AudioParameterFloat("rate", "Rate", rateRange, 0.25f));
 
     // Depth
-    addParameter(depth = new juce::AudioParameterFloat("depth", "Depth", 0.0f, 1.0f, 0.5f));
+    addParameter(depth = new juce::AudioParameterFloat("depth", "Depth", 0.001f, 1.0f, 0.5f));
 
     // Feedback
-    juce::NormalisableRange<float> fdbkRange(0.0f, 0.5f);
-    fdbkRange.skew = 0.1f;
+    juce::NormalisableRange<float> fdbkRange(0.0f, 0.9f);
+    fdbkRange.skew = 0.3f;
     addParameter(fdbk = new juce::AudioParameterFloat("fdbk", "Feedback", fdbkRange, 0.0f));
 }
 
@@ -200,29 +204,29 @@ int GloriousAudioProcessor::msToSamples(float ms)
 }
 
 //==============================================================================
-bool GloriousAudioProcessor::hasEditor() const
-{
-    return false; // (change this to false if you choose to not supply an editor)
-}
+//bool GloriousAudioProcessor::hasEditor() const
+//{
+//    return false; // (change this to false if you choose to not supply an editor)
+//}
 
-juce::AudioProcessorEditor* GloriousAudioProcessor::createEditor()
-{
-    return new GloriousAudioProcessorEditor (*this);
-}
+//juce::AudioProcessorEditor* GloriousAudioProcessor::createEditor()
+//{
+//    return new GloriousAudioProcessorEditor (*this);
+//}
 
 //==============================================================================
-void GloriousAudioProcessor::getStateInformation (juce::MemoryBlock& destData)
-{
+//void GloriousAudioProcessor::getStateInformation (juce::MemoryBlock& destData)
+//{
     // You should use this method to store your parameters in the memory block.
     // You could do that either as raw data, or use the XML or ValueTree classes
     // as intermediaries to make it easy to save and load complex data.
-}
+//}
 
-void GloriousAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
-{
+//void GloriousAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
+//{
     // You should use this method to restore your parameters from this memory block,
     // whose contents will have been created by the getStateInformation() call.
-}
+//}
 
 //==============================================================================
 // This creates new instances of the plugin..

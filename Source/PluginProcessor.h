@@ -14,7 +14,7 @@
 //==============================================================================
 /**
 */
-class GloriousAudioProcessor  : public juce::AudioProcessor
+class GloriousAudioProcessor : public foleys::MagicProcessor
 {
 public:
     //==============================================================================
@@ -34,8 +34,8 @@ public:
     int msToSamples(float ms);
 
     //==============================================================================
-    juce::AudioProcessorEditor* createEditor() override;
-    bool hasEditor() const override;
+    //juce::AudioProcessorEditor* createEditor() override;
+    //bool hasEditor() const override;
 
     //==============================================================================
     const juce::String getName() const override;
@@ -53,8 +53,8 @@ public:
     void changeProgramName (int index, const juce::String& newName) override;
 
     //==============================================================================
-    void getStateInformation (juce::MemoryBlock& destData) override;
-    void setStateInformation (const void* data, int sizeInBytes) override;
+    //void getStateInformation (juce::MemoryBlock& destData) override;
+    //void setStateInformation (const void* data, int sizeInBytes) override;
 
 private:
     juce::AudioParameterFloat *mix, *rate, *depth, *fdbk;
