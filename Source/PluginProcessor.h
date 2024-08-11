@@ -57,11 +57,13 @@ public:
     //void setStateInformation (const void* data, int sizeInBytes) override;
 
 private:
-    juce::AudioParameterFloat *mix, *rate, *depth, *fdbk;
+    juce::AudioParameterChoice* mode;
+    juce::AudioParameterFloat *mix, *rate, *depth, *mod;
 
-    juce::SmoothedValue<float, juce::ValueSmoothingTypes::Linear> sMix, sRate, sDepth, sFdbk;
+    juce::SmoothedValue<float, juce::ValueSmoothingTypes::Linear> sMix, sRate, sDepth, sMod;
 
-    Glorious chorusModule;
+    Glorious glorious;
+    June june;
 
     int hostSampleRate{ 44100 };
 

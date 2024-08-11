@@ -28,6 +28,9 @@ GloriousAudioProcessor::GloriousAudioProcessor()
 
     // Parameter initialization
 
+    // Mode
+    addParameter(mode = new juce::AudioParameterChoice("mode", "Mode", {"Glorious", "June"}, 0));
+
     // Mix
     addParameter(mix = new juce::AudioParameterFloat("mix", "Mix", 0.0f, 1.0f, 0.5f));
 
@@ -39,10 +42,8 @@ GloriousAudioProcessor::GloriousAudioProcessor()
     // Depth
     addParameter(depth = new juce::AudioParameterFloat("depth", "Depth", 0.001f, 1.0f, 0.5f));
 
-    // Feedback
-    juce::NormalisableRange<float> fdbkRange(0.0f, 0.9f);
-    fdbkRange.skew = 0.3f;
-    addParameter(fdbk = new juce::AudioParameterFloat("fdbk", "Feedback", fdbkRange, 0.0f));
+    // Mod (Feedback, Duplicate)
+    addParameter(mod = new juce::AudioParameterFloat("mod", "Mod", 0.0, 1.0, 0.0f));
 }
 
 GloriousAudioProcessor::~GloriousAudioProcessor()
@@ -121,13 +122,16 @@ void GloriousAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlo
     spec.maximumBlockSize = samplesPerBlock;
     spec.numChannels = getTotalNumInputChannels();
 
-    chorusModule.prepare(spec, bufferSizeInSamples);
-    chorusModule.setParams(GloriousParams(*rate, *depth, *fdbk, *mix));
+    glorious.prepare(spec, bufferSizeInSamples);
+    glorious.setParams(GloriousParams(*rate, *depth, *mod, *mix));
+
+    june.prepare(spec, bufferSizeInSamples);
+    june.setParams(JuneParams(*rate, *depth, *mod, *mix));
 
     sRate.reset(400);
     sDepth.reset(400);
     sMix.reset(400);
-    sFdbk.reset(400);
+    sMod.reset(400);
 }
 
 void GloriousAudioProcessor::releaseResources()
@@ -173,12 +177,10 @@ void GloriousAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juc
     sMix.setTargetValue(*mix);
     sRate.setTargetValue(*rate);
     sDepth.setTargetValue(*depth);
-    sFdbk.setTargetValue(*fdbk);
+    sMod.setTargetValue(*mod);
 
     for (int sample = 0; sample < buffer.getNumSamples(); ++sample)
     {
-        chorusModule.setParams(GloriousParams(sRate.getNextValue(), sDepth.getNextValue(), sFdbk.getNextValue(), sMix.getNextValue()));
-
         std::array<float, 2> chorusInput;
         std::array<float, 2> chorusOutput;
 
@@ -188,7 +190,16 @@ void GloriousAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juc
             chorusInput[channel] = currentInputChannel[sample];
         }
 
-        chorusOutput = chorusModule.process(chorusInput);
+        if (mode->getIndex() == 0)
+        {
+            glorious.setParams(GloriousParams(sRate.getNextValue(), sDepth.getNextValue(), sMod.getNextValue(), sMix.getNextValue()));
+            chorusOutput = glorious.process(chorusInput);
+        }
+        else
+        {
+            june.setParams(JuneParams(sRate.getNextValue(), sDepth.getNextValue(), sMod.getNextValue(), sMix.getNextValue()));
+            chorusOutput = june.process(chorusInput);
+        }
 
         for (int channel = 0; channel < 2; ++channel)
         {
