@@ -16,7 +16,7 @@ Glorious:
 
 This mode employs the use of two delay lines, with two taps taken from each. There are four sine wave LFOs modulating the delay time for all 4 taps, which are phase shifted by 90 degrees apart from each other. The outputs from the delay taps are then mixed down in such a way as to be evenly panned around the listener.
 
-[Signal flow diagram of the Glorious algorithm](Resources/GloriousSignalFlow.png)
+![Signal flow diagram of the Glorious algorithm](Resources/GloriousSignalFlow.png)
 
 The result is a flexible and generally "swirly" sounding chorus (especially if the "Mod"/feedback control is turned up) which can go from subtle to quite crazy. 
 
