@@ -1,3 +1,42 @@
+class Biquad {
+public:
+	Biquad() {}
+	~Biquad() {}
+
+	void prepare(double a0, double b1)
+	{
+		this->a0 = a0;
+		a1 = 0.0f;
+		this->b1 = b1;
+
+		reset();
+	}
+
+	void reset()
+	{
+		z1 = 0.0f;
+		z2 = 0.0f;
+	}
+
+	float process(float in)
+	{
+		float out = a0 * in + z1;
+
+		// Check for underflow
+		JUCE_SNAP_TO_ZERO(out);
+
+		z1 = a1 * in - b1 * out;
+
+		return out;
+	}
+
+private:
+	double a0, a1, b1;
+	float z1, z2 = 0.0f;
+};
+
+//===========================================================
+
 struct GloriousParams {
 	GloriousParams() {}
 
@@ -9,7 +48,7 @@ struct GloriousParams {
 		this->mix = mix;
 	}
 
-	float rate = 0.5f;
+	float rate = 0.25f;
 	float depth = 0.5f;
 	float fdbk = 0.0f;
 	float mix = 0.5f;
@@ -56,8 +95,8 @@ public:
 
 		std::array<float, 2> out;
 
-		out[0] = in[0] * (1 - params.mix) + (taps[0] * 0.5f + taps[1] * 0.3f + taps[2] * 0.2f) * params.mix;
-		out[1] = in[1] * (1 - params.mix) + (taps[3] * 0.5f + taps[2] * 0.3f + taps[1] * 0.2f) * params.mix;
+		out[0] = in[0] * (1.0f - params.mix) + (taps[0] * 0.55f + taps[1] * 0.33f + taps[2] * 0.22f) * params.mix;
+		out[1] = in[1] * (1.0f - params.mix) + (taps[3] * 0.55f + taps[2] * 0.33f + taps[1] * 0.22f) * params.mix;
 
 		lfoX += lfoIncrement;
 
@@ -105,7 +144,7 @@ struct JuneParams {
 		this->mix = mix;
 	}
 
-	float rate = 0.5f;
+	float rate = 0.4f;
 	float depth = 0.5f;
 	float dup = 0.0f;
 	float mix = 0.5f;
@@ -124,6 +163,7 @@ public:
 			delays[i].prepare(spec);
 			delays[i].setMaximumDelayInSamples(maxDelayInSamples);
 			delays[i].reset();
+			lpfs[i].prepare(0.6311373775480995, -0.36886262245190043);
 		}
 	}
 
@@ -133,12 +173,16 @@ public:
 		lfoIncs[1] = lfoIncs[0] * 1.6;
 
 		std::array<float, 2> lfos;
+		std::array<float, 2> ilfos; // Inverse lfos
 
 		// Calculate lfo values
 		for (int i = 0; i < 2; ++i)
 		{
 			lfos[i] = (triangle(lfoXs[i]) + 1.0f) / 2.0f;
+			ilfos[i] = -lfos[i] + 1.0f;
+
 			lfos[i] = 10.7f * params.depth * lfos[i] + 1.66f;
+			ilfos[i] = 10.7f * params.depth * ilfos[i] + 1.66f;
 		}
 
 		std::array<float, 2> delayLOuts, delayROuts;
@@ -147,7 +191,7 @@ public:
 		for (int i = 0; i < 2; ++i)
 		{
 			delayLOuts[i] = delays[i].popSample(0, msToSamples(lfos[i])); // L
-			delayROuts[i] = delays[i].popSample(1, msToSamples(-lfos[i])); // R
+			delayROuts[i] = delays[i].popSample(1, msToSamples(ilfos[i])); // R
 		}
 
 		for (int i = 0; i < 2; i++) 
@@ -156,11 +200,20 @@ public:
 			delays[i].pushSample(1, in[1]); // R
 		}
 
-		std::array<float, 2> out;
-
+		std::array<float, 2> wet;
 		float d = 0.5 * params.dup;
-		out[0] = in[0] * (1 - params.mix) + (delayLOuts[0] * (1 - d) + delayLOuts[1] * d) * params.mix; // L
-		out[1] = in[1] * (1 - params.mix) + (delayROuts[0] * (1 - d) + delayROuts[1] * d) * params.mix; // R
+		wet[0] = (delayLOuts[0] * (1.0f - d) + delayLOuts[1] * d); // L
+		wet[1] = (delayROuts[0] * (1.0f - d) + delayROuts[1] * d); // R
+
+		// Filter the wet signal
+		for (int i = 0; i < 2; i++) 
+		{
+			wet[i] = lpfs[i].process(wet[i]); // L + R lpf
+		}
+		
+		std::array<float, 2> out;
+		out[0] = in[0] * (1.0f - params.mix) + wet[0] * params.mix * gainMakeup(params.mix); // L
+		out[1] = in[1] * (1.0f - params.mix) + wet[1] * params.mix * gainMakeup(params.mix); // R
 
 		for (int i = 0; i < 2; i++)
 		{
@@ -190,6 +243,8 @@ private:
 	std::array<float, 2> lfoXs{ 0.0, 0.0 };
 	std::array<float, 2> lfoIncs;
 
+	std::array<Biquad, 2> lpfs{ Biquad(), Biquad() };
+
 	float msToSamples(float ms)
 	{
 		return ms * spec.sampleRate / 1000.0f;
@@ -198,5 +253,10 @@ private:
 	float triangle(float x) {
 		if (x <= 2.0) { return -x + 1; }
 		else { return x - 3; }
+	}
+
+	float gainMakeup(float x) 
+	{
+		return -std::powf((1.5 * x), 2) + 2.25 * x + 1;
 	}
 };
