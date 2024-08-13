@@ -95,8 +95,8 @@ public:
 
 		std::array<float, 2> out;
 
-		out[0] = in[0] * (1.0f - params.mix) + (taps[0] * 0.55f + taps[1] * 0.33f + taps[2] * 0.22f) * params.mix;
-		out[1] = in[1] * (1.0f - params.mix) + (taps[3] * 0.55f + taps[2] * 0.33f + taps[1] * 0.22f) * params.mix;
+		out[0] = in[0] * (1.0f - params.mix) + (taps[0] * 0.55f + taps[1] * 0.33f + taps[2] * 0.22f) * params.mix * gainMakeup(params.mix);
+		out[1] = in[1] * (1.0f - params.mix) + (taps[3] * 0.55f + taps[2] * 0.33f + taps[1] * 0.22f) * params.mix * gainMakeup(params.mix);
 
 		lfoX += lfoIncrement;
 
@@ -128,6 +128,11 @@ private:
 	float msToSamples(float ms)
 	{
 		return ms * spec.sampleRate / 1000.0f;
+	}
+
+	float gainMakeup(float x)
+	{
+		return -std::powf((1.5 * x), 2) + 2.25 * x + 1;
 	}
 };
 
@@ -202,8 +207,8 @@ public:
 
 		std::array<float, 2> wet;
 		float d = 0.5 * params.dup;
-		wet[0] = (delayLOuts[0] * (1.0f - d) + delayLOuts[1] * d); // L
-		wet[1] = (delayROuts[0] * (1.0f - d) + delayROuts[1] * d); // R
+		wet[0] = delayLOuts[0] * (1.0f - d) + delayLOuts[1] * d * (1.2 * params.dup); // L
+		wet[1] = delayROuts[0] * (1.0f - d) + delayROuts[1] * d * (1.2 * params.dup); // R
 
 		// Filter the wet signal
 		for (int i = 0; i < 2; i++) 
