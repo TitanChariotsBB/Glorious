@@ -37,6 +37,11 @@ private:
 
 //===========================================================
 
+float gainMakeup(float x)
+{
+	return -std::powf((1.5 * x), 2) + 2.25 * x + 1;
+}
+
 struct GloriousParams {
 	GloriousParams() {}
 
@@ -83,7 +88,7 @@ public:
 		for (int i = 0; i < 4; ++i)
 		{
 			int channel = i / 2;
-			taps[i] = delay.popSample(channel, msToSamples(lfos[i]), i % 2 != 0); // Update read pointer on the last read
+			taps[i] = delay.popSample(channel, lfos[i] * spec.sampleRate * 0.001f, i % 2 != 0); // Update read pointer on the last read
 		}
 
 		float f = 0.9 * params.fdbk;
@@ -124,16 +129,6 @@ private:
 
 	std::array<float, 4> lfos;
 	std::array<float, 4> taps;
-
-	float msToSamples(float ms)
-	{
-		return ms * spec.sampleRate / 1000.0f;
-	}
-
-	float gainMakeup(float x)
-	{
-		return -std::powf((1.5 * x), 2) + 2.25 * x + 1;
-	}
 };
 
 //=================================================================================
@@ -195,8 +190,8 @@ public:
 		// Tap the delays
 		for (int i = 0; i < 2; ++i)
 		{
-			delayLOuts[i] = delays[i].popSample(0, msToSamples(lfos[i])); // L
-			delayROuts[i] = delays[i].popSample(1, msToSamples(ilfos[i])); // R
+			delayLOuts[i] = delays[i].popSample(0, lfos[i] * spec.sampleRate * 0.001f); // L
+			delayROuts[i] = delays[i].popSample(1, ilfos[i] * spec.sampleRate * 0.001f); // R
 		}
 
 		for (int i = 0; i < 2; i++) 
@@ -250,18 +245,8 @@ private:
 
 	std::array<Biquad, 2> lpfs{ Biquad(), Biquad() };
 
-	float msToSamples(float ms)
-	{
-		return ms * spec.sampleRate / 1000.0f;
-	}
-
 	float triangle(float x) {
 		if (x <= 2.0) { return -x + 1; }
 		else { return x - 3; }
-	}
-
-	float gainMakeup(float x) 
-	{
-		return -std::powf((1.5 * x), 2) + 2.25 * x + 1;
 	}
 };
