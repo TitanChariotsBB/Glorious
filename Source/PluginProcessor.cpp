@@ -25,6 +25,7 @@ GloriousAudioProcessor::GloriousAudioProcessor()
     // Link to gui
     FOLEYS_SET_SOURCE_PATH(__FILE__)
     magicState.setGuiValueTree(BinaryData::magic_xml, BinaryData::magic_xmlSize);
+    analyser = magicState.createAndAddObject<foleys::MagicOscilloscope>("input");
 
     // Parameter initialization
 
@@ -56,32 +57,11 @@ const juce::String GloriousAudioProcessor::getName() const
     return JucePlugin_Name;
 }
 
-bool GloriousAudioProcessor::acceptsMidi() const
-{
-   #if JucePlugin_WantsMidiInput
-    return true;
-   #else
-    return false;
-   #endif
-}
+bool GloriousAudioProcessor::acceptsMidi() const { return false; }
 
-bool GloriousAudioProcessor::producesMidi() const
-{
-   #if JucePlugin_ProducesMidiOutput
-    return true;
-   #else
-    return false;
-   #endif
-}
+bool GloriousAudioProcessor::producesMidi() const { return false; }
 
-bool GloriousAudioProcessor::isMidiEffect() const
-{
-   #if JucePlugin_IsMidiEffect
-    return true;
-   #else
-    return false;
-   #endif
-}
+bool GloriousAudioProcessor::isMidiEffect() const { return false; }
 
 double GloriousAudioProcessor::getTailLengthSeconds() const
 {
@@ -121,6 +101,8 @@ void GloriousAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlo
     spec.sampleRate = sampleRate;
     spec.maximumBlockSize = samplesPerBlock;
     spec.numChannels = getTotalNumInputChannels();
+
+    analyser->prepareToPlay(sampleRate, samplesPerBlock);
 
     glorious.prepare(spec, bufferSizeInSamples);
     glorious.setParams(GloriousParams(*rate, *depth, *mod, *mix));
@@ -207,6 +189,8 @@ void GloriousAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juc
             currentOutputChannel[sample] = chorusOutput[channel];
         }
     }
+
+    analyser->pushSamples(buffer);
 }
 
 int GloriousAudioProcessor::msToSamples(float ms)
@@ -220,10 +204,17 @@ int GloriousAudioProcessor::msToSamples(float ms)
 //    return false; // (change this to false if you choose to not supply an editor)
 //}
 
-//juce::AudioProcessorEditor* GloriousAudioProcessor::createEditor()
-//{
-//    return new GloriousAudioProcessorEditor (*this);
-//}
+juce::AudioProcessorEditor* GloriousAudioProcessor::createEditor()
+{
+    auto builder = std::make_unique<foleys::MagicGUIBuilder>(magicState);
+
+    builder->registerJUCEFactories();
+    builder->registerJUCELookAndFeels();
+
+    builder->registerLookAndFeel("AbbottLNF", std::make_unique<AbbottLNF>());
+
+    return new foleys::MagicPluginEditor(magicState, std::move(builder));
+}
 
 //==============================================================================
 //void GloriousAudioProcessor::getStateInformation (juce::MemoryBlock& destData)

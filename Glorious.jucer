@@ -2,9 +2,19 @@
 
 <JUCERPROJECT id="wT8gM8" name="Glorious" projectType="audioplug" useAppConfig="0"
               addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1" pluginVST3Category="Modulation"
-              defines="FOLEYS_SHOW_GUI_EDITOR_PALLETTE=0">
+              defines="FOLEYS_SHOW_GUI_EDITOR_PALLETTE=0" version="0.1.0" companyName="Abbott Audio"
+              companyWebsite="github.com/TitanChariotsBB" companyEmail="cmagwoodva@gmail.com">
   <MAINGROUP id="usEKOZ" name="Glorious">
     <GROUP id="{1C1BA35F-5FCF-84F1-EDC7-0A37FC806D2B}" name="Source">
+      <GROUP id="{9771F190-D534-355D-3904-F7CEFDBF5C4C}" name="GUI">
+        <GROUP id="{57DA8A60-6791-AF6E-F996-C0D07FF4F70B}" name="res">
+          <FILE id="iNp47I" name="knob.svg" compile="0" resource="1" file="Source/GUI/res/knob.svg"/>
+          <FILE id="hTzDpE" name="magic.xml" compile="0" resource="1" file="Source/GUI/res/magic.xml"/>
+          <FILE id="hiWwLq" name="pointer.svg" compile="0" resource="1" file="Source/GUI/res/pointer.svg"/>
+        </GROUP>
+        <FILE id="xRksHB" name="AbbottLNF.cpp" compile="1" resource="0" file="Source/GUI/AbbottLNF.cpp"/>
+        <FILE id="UPV5v5" name="AbbottLNF.h" compile="0" resource="0" file="Source/GUI/AbbottLNF.h"/>
+      </GROUP>
       <FILE id="fGgG7m" name="ChorusAlgos.h" compile="0" resource="0" file="Source/ChorusAlgos.h"/>
       <FILE id="uA5XnV" name="PluginProcessor.cpp" compile="1" resource="0"
             file="Source/PluginProcessor.cpp"/>
@@ -14,7 +24,6 @@
             file="Source/PluginEditor.cpp"/>
       <FILE id="bthKcm" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
     </GROUP>
-    <FILE id="Ep5cDz" name="magic.xml" compile="0" resource="1" file="Resources/magic.xml"/>
   </MAINGROUP>
   <MODULES>
     <MODULE id="foleys_gui_magic" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>

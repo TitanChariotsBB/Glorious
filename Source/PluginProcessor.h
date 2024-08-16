@@ -10,6 +10,7 @@
 
 #include <JuceHeader.h>
 #include "ChorusAlgos.h"
+#include "GUI/AbbottLNF.h"
 
 //==============================================================================
 /**
@@ -34,7 +35,7 @@ public:
     int msToSamples(float ms);
 
     //==============================================================================
-    //juce::AudioProcessorEditor* createEditor() override;
+    juce::AudioProcessorEditor* createEditor() override;
     //bool hasEditor() const override;
 
     //==============================================================================
@@ -66,6 +67,8 @@ private:
     June june;
 
     int hostSampleRate{ 44100 };
+
+    foleys::MagicPlotSource* analyser = nullptr;
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (GloriousAudioProcessor)
