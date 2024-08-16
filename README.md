@@ -27,3 +27,13 @@ June:
 This mode is modeled after the famous chorus circuit on the Roland Juno 6/60/106 series of polysynths. Because it was a budget product, Roland had to come up with clever ways to make the single oscillator per voice sound lush. The result was a chorus unit using inverted triangle LFOs to modulate a pair of delay lines with carefully selected rate and density settings. As the chorus has only two buttons ("I" and "II") and Glorious has 4 knobs, it was rather limited in comparison. However, the settings were well chosen, so I've made dialing in those parameters on Glorious easy. To emulate chorus I, set mix to 50%, rate to 0.4-0.5 Hz, depth to 50%, and mod to 0%. For chorus II, simply set the rate to 0.8-1.0 Hz. On the old Junos, one also had the option to engage both choruses, which thickened the sound. Due to hardware limitations, this did not actually run I and II in parallel, but because I'm lazy I've decided to implement this feature a different way. Turning up the "Mod" control will bring in a second copy of the chorus at a slightly faster modulation rate compared to the current setting (the same ratio as I and II), thus giving one two choruses in parallel.
 
 ### How do I install it?
+
+Coming soon...
+
+### Credits
+
+**GUI Framework:** [Foley's GUI Magic](https://github.com/ffAudio/foleys_gui_magic)
+
+**GUI Inspiration:** [CHOW Tape Model](https://github.com/jatinchowdhury18/AnalogTapeModel)
+
+Thanks to the respective creators for the superb open-source plugins and frameworks out there! They were incredibly useful to me.
