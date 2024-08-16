@@ -68,7 +68,7 @@ private:
 
     int hostSampleRate{ 44100 };
 
-    foleys::MagicPlotSource* analyser = nullptr;
+    foleys::MagicPlotSource* oscilloscope = nullptr;
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (GloriousAudioProcessor)

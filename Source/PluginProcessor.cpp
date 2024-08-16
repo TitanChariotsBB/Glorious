@@ -25,7 +25,7 @@ GloriousAudioProcessor::GloriousAudioProcessor()
     // Link to gui
     FOLEYS_SET_SOURCE_PATH(__FILE__)
     magicState.setGuiValueTree(BinaryData::magic_xml, BinaryData::magic_xmlSize);
-    analyser = magicState.createAndAddObject<foleys::MagicOscilloscope>("input");
+    oscilloscope = magicState.createAndAddObject<foleys::MagicOscilloscope>("input");
 
     // Parameter initialization
 
@@ -102,7 +102,7 @@ void GloriousAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlo
     spec.maximumBlockSize = samplesPerBlock;
     spec.numChannels = getTotalNumInputChannels();
 
-    analyser->prepareToPlay(sampleRate, samplesPerBlock);
+    oscilloscope->prepareToPlay(sampleRate, samplesPerBlock);
 
     glorious.prepare(spec, bufferSizeInSamples);
     glorious.setParams(GloriousParams(*rate, *depth, *mod, *mix));
@@ -190,7 +190,7 @@ void GloriousAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juc
         }
     }
 
-    analyser->pushSamples(buffer);
+    oscilloscope->pushSamples(buffer);
 }
 
 int GloriousAudioProcessor::msToSamples(float ms)
