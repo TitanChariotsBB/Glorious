@@ -28,7 +28,9 @@ This mode is modeled after the famous chorus circuit on the Roland Juno 6/60/106
 
 ### How do I install it?
 
-Coming soon...
+If you have a windows machine, go to the releases page on this repo and download the zip archive. Unpack it, and copy the Glorious.vst3 folder to wherever you keep your VST3 plugins. Windows will probably yell at you that it's an unsigned app, but you can ignore this.
+
+If you don't have windows, you'll have to build it yourself via the Projucer. First, download and install JUCE. (I used version 8 for development.) Next clone [Foley's GUI Magic](https://github.com/ffAudio/foleys_gui_magic) and put it where you like. (I did this in my JUCE folder.) Next you'll want to clone Glorious and open the `.jucer` file with the Projucer. You will likely have to tell the Projucer the paths to JUCE and the JUCE modules. Then you can export the project to your IDE and build it.
 
 ### Credits
 
