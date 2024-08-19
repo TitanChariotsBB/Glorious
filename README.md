@@ -4,7 +4,7 @@ A stereo chorus plugin made with [JUCE](https://juce.com/)
 
 ![Glorious UI](Resources/GloriousUI.png)
 
-![Video Demo](https://youtu.be/eGNq_3rbi5k)
+[Video Demo](https://youtu.be/eGNq_3rbi5k)
 
 ### What is this?
 
