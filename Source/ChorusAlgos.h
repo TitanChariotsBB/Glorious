@@ -23,8 +23,8 @@ public:
 		float out = a0 * in + z1;
 
 		// Check for underflow
-		JUCE_SNAP_TO_ZERO(out);
-
+        juce::ignoreUnused(out);
+        
 		z1 = a1 * in - b1 * out;
 
 		return out;
